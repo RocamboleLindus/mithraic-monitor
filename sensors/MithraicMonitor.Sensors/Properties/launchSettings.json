@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "MithraicMonitor.Sensors": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 47831",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://127.0.0.1:47831"
+    }
+  }
+}
