@@ -1,0 +1,50 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Mithraic HW Monitor",
+  "version": "0.1.0",
+  "identifier": "com.mithraic.monitor",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Mithraic HW Monitor",
+        "width": 1280,
+        "height": 840,
+        "minWidth": 1024,
+        "minHeight": 680,
+        "resizable": true,
+        "decorations": false,
+        "shadow": true,
+        "backgroundColor": "#0c0c0e"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self' http://localhost:1420 http://127.0.0.1:1420; connect-src 'self' ipc: http://ipc.localhost http://127.0.0.1:47831 http://localhost:47831 http://localhost:1420 http://127.0.0.1:1420 ws://localhost:1420 ws://127.0.0.1:1420 ws://localhost:1421 ws://127.0.0.1:1421; img-src 'self' data: asset: http://asset.localhost; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "publisher": "Mithra",
+    "shortDescription": "A hardware monitor for temperatures, clocks, fans, and power.",
+    "externalBin": ["binaries/MithraicMonitor.Sensors"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser"
+      }
+    }
+  }
+}

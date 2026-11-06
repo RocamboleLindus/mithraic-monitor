@@ -1,0 +1,14 @@
+bin/
+obj/
+dist/
+dist-ssr/
+node_modules/
+src-tauri/target/
+src-tauri/gen/
+src-tauri/binaries/
+src-tauri/sensor-publish/
+.sensor-url
+*.user
+.vs/
+*.log
+.DS_Store
