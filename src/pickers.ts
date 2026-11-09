@@ -18,12 +18,34 @@ export function gpuLoad(sensors: SensorReading[]): SensorReading | undefined {
   return prefer(gpuSensors(sensors, "Load"), /gpu core|d3d|3d|^core$/i);
 }
 
-export function memoryUse(sensors: SensorReading[]): SensorReading | undefined {
-  const memory = sensors.filter((sensor) => sensor.hardwareType === "Memory" && !sensor.hidden);
+export function memoryLoad(sensors: SensorReading[]): SensorReading | undefined {
+  const memory = physicalMemory(sensors);
   return (
+    memory.find((sensor) => sensor.sensorType === "Load" && /^memory$/i.test(sensor.sensorName)) ??
     memory.find((sensor) => sensor.sensorType === "Load") ??
-    memory.find((sensor) => sensor.sensorType === "Data" && /used/i.test(sensor.sensorName)) ??
     memory.find((sensor) => sensor.sensorType === "Level")
+  );
+}
+
+export function memoryUse(sensors: SensorReading[]): SensorReading | undefined {
+  const memory = physicalMemory(sensors);
+  return (
+    memory.find((sensor) => sensor.sensorType === "Data" && /used/i.test(sensor.sensorName)) ??
+    memoryLoad(sensors)
+  );
+}
+
+export function memoryTotalGb(sensors: SensorReading[]): number | undefined {
+  const memory = physicalMemory(sensors);
+  const used = memory.find((sensor) => sensor.sensorType === "Data" && /used/i.test(sensor.sensorName))?.value;
+  const available = memory.find((sensor) => sensor.sensorType === "Data" && /available/i.test(sensor.sensorName))?.value;
+  if (used == null || available == null) return undefined;
+  return used + available;
+}
+
+function physicalMemory(sensors: SensorReading[]): SensorReading[] {
+  return sensors.filter(
+    (sensor) => sensor.hardwareType === "Memory" && !sensor.hidden && !/virtual/i.test(sensor.sensorName),
   );
 }
 

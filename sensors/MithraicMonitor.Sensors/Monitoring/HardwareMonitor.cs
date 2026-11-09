@@ -15,6 +15,7 @@ public sealed class HardwareMonitor : IDisposable
     private readonly Dictionary<string, ISensor> _sensors = new(StringComparer.Ordinal);
     private readonly List<ChannelWriter<SensorSnapshot>> _subscribers = [];
     private SensorSnapshot _latest = SensorSnapshot.Empty;
+    private readonly List<SensorReading> _readings = [];
     private CancellationTokenSource? _cts;
     private Task? _loop;
     private int _intervalMs = 1000;
@@ -189,13 +190,14 @@ public sealed class HardwareMonitor : IDisposable
             if (!_open)
                 return;
 
+            _visitor.BeginTick();
             _computer.Accept(_visitor);
             _sensors.Clear();
-            var readings = new List<SensorReading>();
+            _readings.Clear();
             foreach (IHardware hardware in _computer.Hardware)
-                Collect(hardware, hardware, readings);
+                Collect(hardware, hardware, _readings);
 
-            snapshot = new SensorSnapshot(DateTimeOffset.UtcNow, readings);
+            snapshot = new SensorSnapshot(DateTimeOffset.UtcNow, [.. _readings]);
         }
 
         lock (_subscribersGate)

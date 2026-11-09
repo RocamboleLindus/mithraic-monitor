@@ -10,9 +10,10 @@ import {
   gpuLoad,
   gpuTemperature,
   hottestTemperature,
+  memoryLoad,
+  memoryTotalGb,
   memoryUse,
   networkRates,
-  packagePower,
 } from "../pickers";
 import type { Sample, SensorReading, TempUnit } from "../types";
 
@@ -27,8 +28,9 @@ export function HomePage({ sensors, history, unit }: HomePageProps) {
   const gpuTemp = gpuTemperature(sensors);
   const cpu = cpuLoad(sensors);
   const gpu = gpuLoad(sensors);
-  const memory = memoryUse(sensors);
-  const power = packagePower(sensors);
+  const memory = memoryLoad(sensors);
+  const memoryUsed = memoryUse(sensors);
+  const memoryTotal = memoryTotalGb(sensors);
   const boardTemp = hottestTemperature(sensors, ["Motherboard", "SuperIO", "EmbeddedController"]);
   const driveTemp = hottestTemperature(sensors, ["Storage"]);
   const rates = networkRates(sensors);
@@ -40,7 +42,7 @@ export function HomePage({ sensors, history, unit }: HomePageProps) {
     <section className="page">
       <header className="page-head">
         <h1>Home</h1>
-        <p>Live temperatures, load, memory, and package power.</p>
+        <p>Live temperatures, load, and memory.</p>
       </header>
       <div className="hero-grid">
         <MetricCard label="CPU temperature" reading={cpuTemp} samples={history.get(cpuTemp?.id ?? "")} unit={unit} />
@@ -48,7 +50,20 @@ export function HomePage({ sensors, history, unit }: HomePageProps) {
         <MetricCard label="CPU load" reading={cpu} samples={history.get(cpu?.id ?? "")} unit={unit} />
         <MetricCard label="GPU load" reading={gpu} samples={history.get(gpu?.id ?? "")} unit={unit} />
         <MetricCard label="Memory" reading={memory} samples={history.get(memory?.id ?? "")} unit={unit} />
-        <MetricCard label="CPU package power" reading={power} samples={history.get(power?.id ?? "")} unit={unit} />
+        <MetricCard
+          label="Memory used"
+          reading={memoryUsed}
+          samples={history.get(memoryUsed?.id ?? "")}
+          unit={unit}
+          hint={
+            memoryTotal != null ? (
+              <span>
+                of{" "}
+                {memoryTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} GB
+              </span>
+            ) : undefined
+          }
+        />
       </div>
       <div className="split">
         <article className="panel">
