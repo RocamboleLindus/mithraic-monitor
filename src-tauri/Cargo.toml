@@ -1,6 +1,6 @@
 [package]
 name = "mithraic-monitor"
-version = "0.2.1",
+version = "0.2.1"
 description = "Hardware monitor with an Adrenalin-style shell"
 authors = ["Mithra"]
 edition = "2024"
